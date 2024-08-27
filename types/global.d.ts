@@ -1,0 +1,3 @@
+type TailWindProps = {
+  className?: string;
+}
