@@ -4,6 +4,8 @@ import { PrismaClient } from "@prisma/client";
 import CardPreview, { CardPreviewProps } from "@/components/CardPreview";
 import { getFactionBgUrl } from "@/lib/utils";
 
+export const dynamic = "force-dynamic"
+
 const prisma = new PrismaClient();
 
 export default async function Home() {
