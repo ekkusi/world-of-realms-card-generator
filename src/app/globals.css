@@ -3,6 +3,9 @@
 @tailwind utilities;
   
 @layer base {
+	html {
+		font-size: 20px;
+	}
 	h1 {
 		@apply text-4xl;
 	}
@@ -11,6 +14,18 @@
 	}
 	h3 {
 		@apply text-2xl;
+	}
+	.text-outline {
+		/* 1px black font outline as text shadow */
+		text-shadow: -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000, 1px 1px 1px #000;
+
+		/* text-shadow: -2px -2px #000, 2px -2px #000, -2px 2px #000, 2px 2px #000; */
+	}
+	.text-stroke {
+		-webkit-text-stroke: 0.3px black;
+	}
+	.text-stroke-light {
+		-webkit-text-stroke: 0 black;
 	}
 }
 

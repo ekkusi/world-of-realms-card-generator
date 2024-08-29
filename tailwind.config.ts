@@ -32,6 +32,11 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        "amatic-sc": ["var(--font-amatic-sc)"],
+        "comic-neue": ["var(--font-comic-neue)"],
+        "kalam": ["var(--font-kalam)"],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

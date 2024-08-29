@@ -20,6 +20,7 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
   const [bgImgUrl, setBgImgUrl] = useState<string>();
   const [name, setName] = useState<string>();
   const [description, setDescription] = useState<string>();
+  const [image, setImage] = useState<File>();
   const [imageUrl, setImageUrl] = useState<string>();
   const [damage, setDamage] = useState<number>();
   const [health, setHealth] = useState<number>();
@@ -27,6 +28,8 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
   const [cost, setCost] = useState<number>();
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string>();
+
+  const isValid = !!cardType && !!name && !!description && !!cost && !!image && (cardType === CardType.ENTITY ? !!damage && !!health && !!influence : true);
 
   const onCardTypeChange = (value: string) => {
     setCardType(value as CardType);
@@ -44,12 +47,14 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setImageUrl(e.target?.result as string);
+        setImage(file);
       }
       reader.readAsDataURL(file);
     }
   }
 
   const create = async () => {
+    setError(undefined);
     const card = {
       imageUrl,
       cardType,
@@ -63,9 +68,21 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
     };
     console.log(card);
     setCreating(true);
+    const formData = new FormData();
+    formData.append("file", image!); // Safe cast since we check for image in isValid
+    const uploadResult = await fetch("/api/upload", {
+      method: "POST",
+      body: formData
+    });
+    const uploadJson = await uploadResult.json();
+    if (!uploadResult.ok || !uploadJson.url) {
+      setCreating(false);
+      setError(uploadJson.error || "Unknown error occurred in image upload");
+      return;
+    }
     const result = await fetch("/api/create", {
       method: "POST",
-      body: JSON.stringify({ ...card, imageUrl: "/cards/chronomancer_v2.png" }) // TODO: remove hard-coded image
+      body: JSON.stringify({ ...card, imageUrl: uploadJson.url })
     });
     const json = await result.json();
     setCreating(false);
@@ -73,7 +90,6 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
     if (!result.ok) {
       setError(json.error || "Unknown error occurred");
     } else {
-      setError(undefined);
       onCreated?.();
     }
 
@@ -119,10 +135,10 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
               <Input type="file" accept="image/*" onChange={onImageUpload} />
             </FormField>
             <FormField label="Name">
-              <Input placeholder="Name" onChange={(e) => setName(e.target.value.toUpperCase())} value={name} />
+              <Input placeholder="Name" onChange={(e) => setName(e.target.value)} />
             </FormField>
             <FormField label="Description">
-              <Textarea placeholder="Description" onChange={(e) => setDescription(e.target.value)} />
+              <Textarea placeholder="Description" onChange={(e) => setDescription(e.target.value)} className="font-comic-neue" />
             </FormField>
             {cardType === CardType.ENTITY && (
               <>
@@ -140,7 +156,7 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
             <FormField label="Cost" className="mb-4">
               <Input type="number" placeholder="0" onChange={(e) => setCost(parseInt(e.target.value))} />
             </FormField>
-            <Button onClick={create} disabled={creating}>
+            <Button onClick={create} disabled={creating || !isValid}>
               {creating && <Loader2 className="mr-2 animate-spin" />}
               {creating ? "Creating..." : "Create"}
             </Button>
