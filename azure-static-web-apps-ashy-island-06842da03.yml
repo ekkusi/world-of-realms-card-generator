@@ -1,5 +1,6 @@
 name: Azure Static Web Apps CI/CD
 
+pool: 'Test agent'
 pr:
   branches:
     include:
