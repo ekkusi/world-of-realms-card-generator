@@ -27,5 +27,11 @@
 	.text-stroke-light {
 		-webkit-text-stroke: 0 black;
 	}
+	.container-type-inline {
+		container-type: inline-size;
+	}
+	.container-type-inline > * {
+		width: 100%;
+	}
 }
 

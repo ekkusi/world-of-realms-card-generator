@@ -19,6 +19,7 @@ enum CardType {
 }
 
 enum Faction {
+  NEUTRAL
   NATURE
   TIME
 }
@@ -30,7 +31,7 @@ model Card {
   createdAt   DateTime @default(now())
   cardType    CardType
   cost        Int
-  faction     Faction?
+  faction     Faction
   damage      Int?
   health      Int?
   influence   Int?

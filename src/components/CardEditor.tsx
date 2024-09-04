@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import CardPreview from './CardPreview'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { getCardTypeLabel, getFactionBgUrl, getFactionLabel } from '@/lib/utils';
+import { getCardTypeLabel, getFactionLabel } from '@/lib/utils';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { FormField } from './FormField';
@@ -16,8 +16,7 @@ export type CardEditorProps = {
 
 export default function CardEditor({ onCreated }: CardEditorProps) {
   const [cardType, setCardType] = useState<CardType>();
-  const [faction, setFaction] = useState<Faction>();
-  const [bgImgUrl, setBgImgUrl] = useState<string>();
+  const [faction, setFaction] = useState<Faction>(Faction.NEUTRAL);
   const [name, setName] = useState<string>();
   const [description, setDescription] = useState<string>();
   const [image, setImage] = useState<File>();
@@ -33,12 +32,10 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
 
   const onCardTypeChange = (value: string) => {
     setCardType(value as CardType);
-    setBgImgUrl(value === "spell" ? "/cards/spell_layout.png" : undefined);
   }
 
   const onFactionChange = (value: string) => {
     setFaction(value as Faction);
-    setBgImgUrl(getFactionBgUrl(value as Faction));
   }
 
   const onImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +63,6 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
       influence,
       cost
     };
-    console.log(card);
     setCreating(true);
     const formData = new FormData();
     formData.append("file", image!); // Safe cast since we check for image in isValid
@@ -99,8 +95,7 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
   return (
     <div className="w-full grid grid-cols-2 pb-5">
       <div className="flex flex-col border-r border-r-gray-600 pr-3 gap-3">
-        <div>
-          <span className="block mb-2">Card type</span>
+        <FormField label="Card type">
           <Select onValueChange={onCardTypeChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select card type" />
@@ -111,26 +106,21 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
               )}
             </SelectContent>
           </Select>
-
-
-        </div>
+        </FormField>
         {cardType && (
           <>
-            {cardType === CardType.ENTITY && (
-              <div>
-                <span className="block mb-2">Faction</span>
-                <Select onValueChange={onFactionChange}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select faction" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(Object.keys(Faction) as Array<keyof typeof Faction>).map((faction) =>
-                      <SelectItem key={faction} value={faction}>{getFactionLabel(Faction[faction])}</SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
+            <FormField label="Faction">
+              <Select onValueChange={onFactionChange} value={faction}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select faction" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(Object.keys(Faction) as Array<keyof typeof Faction>).map((faction) =>
+                    <SelectItem key={faction} value={faction}>{getFactionLabel(Faction[faction])}</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+            </FormField>
             <FormField label="Image">
               <Input type="file" accept="image/*" onChange={onImageUpload} />
             </FormField>
@@ -165,7 +155,7 @@ export default function CardEditor({ onCreated }: CardEditorProps) {
         )}
       </div>
       <div className="flex justify-center items-start pt-20">
-        <CardPreview cardType={cardType} bgImgUrl={bgImgUrl} imageUrl={imageUrl} name={name} description={description} damage={damage} health={health} influence={influence} cost={cost} />
+        <CardPreview cardType={cardType} faction={faction} imageUrl={imageUrl} name={name} description={description} damage={damage} health={health} influence={influence} cost={cost} />
       </div>
     </div>
   )

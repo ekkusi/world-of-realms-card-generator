@@ -8,6 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getFactionBgUrl(faction: Faction) {
   switch (faction) {
+    case Faction.NEUTRAL:
+      return "/cards/neutral_bg.png";
     case Faction.TIME:
       return "/cards/time_bg.png";
     case Faction.NATURE:
@@ -17,8 +19,23 @@ export function getFactionBgUrl(faction: Faction) {
   }
 }
 
+export function getFactionCostIconUrl(faction: Faction) {
+  switch (faction) {
+    case Faction.NEUTRAL:
+      return "/cards/time_cost_icon.png";
+    case Faction.TIME:
+      return "/cards/time_cost_icon.png";
+    case Faction.NATURE:
+      return "/cards/nature_cost_icon.png";
+    default:
+      throw Error("Invalid faction");
+  }
+}
+
 export function getFactionLabel(faction: Faction) {
   switch (faction) {
+    case Faction.NEUTRAL:
+      return "Neutral";
     case Faction.TIME:
       return "Time";
     case Faction.NATURE:
