@@ -55,7 +55,7 @@ stages:
 
                 - task: AzureWebApp@1
                   inputs:
-                    azureSubscription: '$(AZURE_SERVICE_CONNECTION)' # This should be your Azure service connection
+                    azureSubscription: 'test-service-connection' # This should be your Azure service connection
                     appName: '$(AZURE_WEBAPP_NAME)'
                     appType: webApp
                     package: '$(Pipeline.Workspace)/app'
