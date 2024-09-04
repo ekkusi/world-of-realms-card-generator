@@ -1,6 +1,5 @@
 name: Azure Static Web Apps CI/CD
 
-pool: 'Test agent'
 pr:
   branches:
     include:
@@ -14,8 +13,7 @@ jobs:
 - job: build_and_deploy_job
   displayName: Build and Deploy Job
   condition: or(eq(variables['Build.Reason'], 'Manual'),or(eq(variables['Build.Reason'], 'PullRequest'),eq(variables['Build.Reason'], 'IndividualCI')))
-  pool:
-    vmImage: ubuntu-latest
+  pool: 'Test agent'
   variables:
   - group: Azure-Static-Web-Apps-ashy-island-06842da03-variable-group
   steps:
