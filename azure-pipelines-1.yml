@@ -12,7 +12,7 @@ pool: 'Test agent'
 
 variables:
   # Container registry service connection established during pipeline creation
-  azureSubcription: 'test-service-connection'
+  azureSubscription: 'test-service-connection'
   dockerRegistryServiceConnection: 'a5fc3c5b-be46-4f73-ba1d-d67ff09a47c6'
   imageRepository: 'worldofrealms'
   containerRegistry: 'ekkusiinmetalearnregistry.azurecr.io'
