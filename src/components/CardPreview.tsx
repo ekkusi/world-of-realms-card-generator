@@ -3,13 +3,16 @@ import Image from 'next/image';
 import { cn, getFactionBgUrl, getFactionCostIconUrl } from '@/lib/utils';
 import { Card, CardType } from '@prisma/client';
 
-export type CardPreviewProps = TailWindProps & Partial<Card> & {}
+export type CardPreviewProps = TailWindProps & Partial<Card> & {
+  cardNumber?: number;
+  onClick?: (cardNumber: number) => void;
+}
 
 export default function CardPreview(props: CardPreviewProps) {
-  const { className, ...card } = props;
+  const { className, onClick, cardNumber, ...card } = props;
 
   return (
-    <div className={cn("overflow-hidden rounded-lg w-[400px] leading-none container-type-inline", className)}>
+    <div className={cn("overflow-hidden rounded-lg w-[400px] leading-none container-type-inline", className)} onClick={() => { if (cardNumber) onClick?.(cardNumber)}}>
       {card.faction ?
         <>
           <div className="relative z-10">
