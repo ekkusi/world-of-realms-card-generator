@@ -16,7 +16,7 @@ pool:
 variables:
   # Container registry service connection established during pipeline creation
   azureSubscription: 'test-service-connection'
-  appName: 'func-inmeta-learn-docker'
+  appName: 'func-inmeta-learn-docker-new'
   dockerRegistryServiceConnection: 'a5fc3c5b-be46-4f73-ba1d-d67ff09a47c6'
   imageRepository: 'worldofrealms'
   containerRegistry: 'ekkusiinmetalearnregistry.azurecr.io'
