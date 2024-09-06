@@ -1,0 +1,56 @@
+
+# Docker
+# Build and push an image to Azure Container Registry
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+name: Azure Function Docker build and deploy
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  # Container registry service connection established during pipeline creation
+  azureSubscription: 'test-service-connection'
+  appName: 'func-inmeta-learn-docker'
+  dockerRegistryServiceConnection: 'a5fc3c5b-be46-4f73-ba1d-d67ff09a47c6'
+  imageRepository: 'worldofrealms'
+  containerRegistry: 'ekkusiinmetalearnregistry.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+- stage: Deploy
+  dependsOn: Build
+  jobs:
+    - deployment: Deploy
+      environment: production
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - task: AzureFunctionAppContainer@1
+                displayName: 'Azure Function on Container Deploy'
+                inputs:
+                  azureSubscription: $(azureSubscription)
+                  appName: $(appName)
+                  containers: $(containerRegistry)/$(imageRepository):$(tag)
