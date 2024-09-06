@@ -3,7 +3,8 @@ trigger:
     include:
       - main
 
-pool: 'Test agent'
+pool:
+  vmImage: 'ubuntu-latest'
 
 variables:
   AZURE_WEBAPP_NAME: 'web-inmeta-learn'

@@ -9,7 +9,8 @@ trigger:
 resources:
 - repo: self
 
-pool: 'Test agent'
+pool:
+  vmImage: 'ubuntu-latest'
 
 variables:
   # Container registry service connection established during pipeline creation
