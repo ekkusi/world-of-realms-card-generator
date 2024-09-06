@@ -53,4 +53,4 @@ stages:
                 inputs:
                   azureSubscription: $(azureSubscription)
                   appName: $(appName)
-                  containers: $(containerRegistry)/$(imageRepository):$(tag)
+                  imageName: $(containerRegistry)/$(imageRepository):$(tag)
