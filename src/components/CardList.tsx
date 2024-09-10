@@ -10,6 +10,7 @@ import { getCardTypeLabel, getFactionLabel } from '@/lib/utils';
 import { FormField } from './FormField';
 import debounce from 'lodash.debounce';
 import { Button } from './ui/button';
+import CardInspector from './CardInspector';
 
 export type CardListProps = {
   cards: Card[];
@@ -18,6 +19,7 @@ export type CardListProps = {
 export default function CardList({ cards }: CardListProps) {
   const [cardTypeFilter, setCardTypeFilter] = useState<CardType>();
   const [factionFilter, setFactionFilter] = useState<Faction>();
+  const [inspectorCardNumber, setInspectorCardNumber] = useState<number | undefined>(undefined);
   const [search, setSearch] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,6 +36,18 @@ export default function CardList({ cards }: CardListProps) {
   const debouncedSearch = debounce((value: string) => {
     setSearch(value);
   }, 300);
+
+  const changeCardInspectorNumber = (changeNumber: number | undefined) => {
+    if (changeNumber === undefined) {
+      setInspectorCardNumber(undefined);
+    }
+    else if (inspectorCardNumber) {
+      const newNumber = inspectorCardNumber + changeNumber;
+      if (newNumber >= 0 && newNumber < cards.length) {
+        setInspectorCardNumber(newNumber);
+      }
+    }
+  }
 
   const shownCards = useMemo(() => {
     return cards.filter(card => (!cardTypeFilter || card.cardType === cardTypeFilter) && (!factionFilter || card.faction === factionFilter) && (!search || card.name.toLowerCase().includes(search.toLowerCase())));
@@ -74,10 +88,13 @@ export default function CardList({ cards }: CardListProps) {
         {(cardTypeFilter || factionFilter || search.length > 0) && <Button variant="link" onClick={clearFilters} className="self-end -ml-2 hover:no-underline hover:opacity-70"><MdClear className="mr-2" />Clear filters</Button>}
       </div>
       <div className="flex flex-wrap gap-2 justify-center">
-        {shownCards.map(card => (
-          <CardPreview key={card.id} {...card} className="w-[300px]" />
+        {shownCards.map((card, i) => (
+          <CardPreview key={card.id} {...card} className="w-[300px]" cardNumber={i} onClick={(cardNumber) => setInspectorCardNumber(cardNumber)} />
         ))}
       </div>
+      {inspectorCardNumber && (
+        <CardInspector card={cards[inspectorCardNumber]} onChange={changeCardInspectorNumber}/>
+      )}
     </div>
   )
 }
